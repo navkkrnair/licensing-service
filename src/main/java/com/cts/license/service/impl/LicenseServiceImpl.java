@@ -26,7 +26,7 @@ public class LicenseServiceImpl implements LicenseService {
     public String createLicense(License license, Locale locale) {
         String response = null;
         License savedLicense = repository.save(license);
-        response = String.format(messages.getMessage("license.create.message", null,locale), savedLicense.getId());
+        response = String.format(messages.getMessage("license.create.message", null, locale), savedLicense.getId());
         return response;
     }
 
@@ -36,9 +36,11 @@ public class LicenseServiceImpl implements LicenseService {
         return optionalLicense.map(license -> {
                                   license.setOrganizationId(organizationId);
                                   repository.save(license);
-                                  return String.format("License with id: %s updated", license.getId());
+                                  return String.format(messages.getMessage("license.update.message", null, null),
+                                          license.getId());
                               })
-                              .orElse(String.format("Failed to update License with id: %s", licenseId));
+                              .orElse(String.format(messages.getMessage("license.update.failed.message", null, null),
+                                      licenseId));
     }
 
     @Override
