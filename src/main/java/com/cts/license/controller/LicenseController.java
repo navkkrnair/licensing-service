@@ -1,5 +1,6 @@
 package com.cts.license.controller;
 
+import com.cts.license.exceptions.NoEntityFoundException;
 import com.cts.license.model.License;
 import com.cts.license.service.LicenseService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,9 @@ public class LicenseController {
     @GetMapping("/{licenseId}/{organizationId}")
     public ResponseEntity<License> getLicense(@PathVariable Long licenseId, @PathVariable String organizationId) {
         License license = licenseService.getLicense(licenseId, organizationId);
+        if (license == null) {
+            throw new NoEntityFoundException("No License found");
+        }
         return ResponseEntity.ok(license);
     }
 
@@ -29,7 +33,7 @@ public class LicenseController {
         return ResponseEntity.ok(licenseService.createLicense(license));
     }
 
-    @DeleteMapping("/{}licenseId")
+    @DeleteMapping("/{licenseId}")
     public ResponseEntity<String> deleteLicense(@PathVariable Long licenseId) {
         return ResponseEntity.ok(licenseService.deleteLicense(licenseId));
     }
