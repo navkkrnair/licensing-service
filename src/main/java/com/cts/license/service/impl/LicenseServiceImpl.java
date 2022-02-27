@@ -15,8 +15,8 @@ public class LicenseServiceImpl implements LicenseService {
     private final LicenseRepository repository;
 
     @Override
-    public License getLicense(Long id, String organizationId) {
-        return repository.findByIdAndOrganizationId(id, organizationId);
+    public License getLicense(Long licenseId, String organizationId) {
+        return repository.findByIdAndOrganizationId(licenseId, organizationId);
     }
 
     @Override
@@ -28,20 +28,20 @@ public class LicenseServiceImpl implements LicenseService {
     }
 
     @Override
-    public String updateLicense(Long id, String organizationId) {
-        Optional<License> optionalLicense = repository.findById(id);
+    public String updateLicense(Long licenseId, String organizationId) {
+        Optional<License> optionalLicense = repository.findById(licenseId);
         return optionalLicense.map(license -> {
                                   license.setOrganizationId(organizationId);
                                   repository.save(license);
                                   return String.format("License with id: %s updated", license.getId());
                               })
-                              .orElse(String.format("Failed to update License with id: %s", id));
+                              .orElse(String.format("Failed to update License with id: %s", licenseId));
     }
 
     @Override
-    public String deleteLicense(Long id) {
-        repository.deleteById(id);
-        String response = String.format("License with id: %s deleted", id);
+    public String deleteLicense(Long licenseId) {
+        repository.deleteById(licenseId);
+        String response = String.format("License with id: %s deleted", licenseId);
         return response;
     }
 }
