@@ -4,8 +4,10 @@ import com.cts.license.model.License;
 import com.cts.license.repository.LicenseRepository;
 import com.cts.license.service.LicenseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -13,6 +15,7 @@ import java.util.Optional;
 public class LicenseServiceImpl implements LicenseService {
 
     private final LicenseRepository repository;
+    private final MessageSource messages;
 
     @Override
     public License getLicense(Long licenseId, String organizationId) {
@@ -20,10 +23,10 @@ public class LicenseServiceImpl implements LicenseService {
     }
 
     @Override
-    public String createLicense(License license) {
+    public String createLicense(License license, Locale locale) {
         String response = null;
         License savedLicense = repository.save(license);
-        response = String.format("License created with id: %s", savedLicense.getId());
+        response = String.format(messages.getMessage("license.create.message", null,locale), savedLicense.getId());
         return response;
     }
 

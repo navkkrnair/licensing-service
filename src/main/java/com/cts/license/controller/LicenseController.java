@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Locale;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("v1/organization/license")
@@ -29,8 +31,9 @@ public class LicenseController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createLicense(@RequestBody License license) {
-        return ResponseEntity.ok(licenseService.createLicense(license));
+    public ResponseEntity<String> createLicense(@RequestBody License license,
+                                                @RequestHeader(value = "Accept-Language", required = false) Locale locale) {
+        return ResponseEntity.ok(licenseService.createLicense(license, locale));
     }
 
     @DeleteMapping("/{licenseId}")
