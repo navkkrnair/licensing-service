@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Locale;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("v1/organization/license")
@@ -22,6 +25,12 @@ public class LicenseController {
         if (license == null) {
             throw new NoEntityFoundException("No License found");
         }
+        license.add(linkTo(methodOn(LicenseController.class).getLicense(licenseId, organizationId)).withSelfRel(),
+                linkTo(methodOn(LicenseController.class).createLicense(license, null)).withRel("createLicense"),
+                linkTo(methodOn(LicenseController.class).updateLicense(licenseId, organizationId)).withRel(
+                        "updateLicense"),
+                linkTo(methodOn(LicenseController.class).deleteLicense(licenseId))
+                        .withRel("deleteLicense"));
         return ResponseEntity.ok(license);
     }
 
