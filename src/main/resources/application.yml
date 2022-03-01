@@ -4,3 +4,7 @@ spring:
   web:
     resources:
       add-mappings: false
+management:
+  endpoint:
+    health:
+      show-details: always
