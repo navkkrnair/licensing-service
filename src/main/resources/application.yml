@@ -1,12 +1,3 @@
 spring:
-  mvc:
-    throw-exception-if-no-handler-found: true
-  web:
-    resources:
-      add-mappings: false
   application:
     name: licensing-service
-management:
-  endpoint:
-    health:
-      show-details: always
