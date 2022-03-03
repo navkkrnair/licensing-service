@@ -4,6 +4,8 @@ spring:
   web:
     resources:
       add-mappings: false
+  application:
+    name: licensing-service
 management:
   endpoint:
     health:
