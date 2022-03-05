@@ -4,6 +4,7 @@ import com.cts.license.exceptions.NoEntityFoundException;
 import com.cts.license.model.License;
 import com.cts.license.service.LicenseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RequiredArgsConstructor
+@RefreshScope
 @RestController
 @RequestMapping("v1/organization/license")
 public class LicenseController {

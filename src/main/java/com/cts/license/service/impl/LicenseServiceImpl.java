@@ -1,5 +1,6 @@
 package com.cts.license.service.impl;
 
+import com.cts.license.config.LicensingServiceProperties;
 import com.cts.license.model.License;
 import com.cts.license.repository.LicenseRepository;
 import com.cts.license.service.LicenseService;
@@ -16,10 +17,13 @@ public class LicenseServiceImpl implements LicenseService {
 
     private final LicenseRepository repository;
     private final MessageSource messages;
+    private final LicensingServiceProperties properties;
 
     @Override
     public License getLicense(Long licenseId, String organizationId) {
-        return repository.findByIdAndOrganizationId(licenseId, organizationId);
+        License license = repository.findByIdAndOrganizationId(licenseId, organizationId);
+        license.setComment(properties.getProperty());
+        return license;
     }
 
     @Override
