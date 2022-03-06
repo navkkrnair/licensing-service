@@ -16,7 +16,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor
 @RefreshScope
 @RestController
-@RequestMapping("v1/organization/license")
+@RequestMapping("v1/license")
 public class LicenseController {
 
     private final LicenseService licenseService;
