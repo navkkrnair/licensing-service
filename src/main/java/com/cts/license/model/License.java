@@ -6,10 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
@@ -21,8 +18,18 @@ public class License extends RepresentationModel<License> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String description;
-    private String organizationId;
+    private Long organizationId;
     private String productName;
     private String licenseType;
     private String comment;
+
+    @Transient
+    private String organizationName;
+    @Transient
+    private String contactName;
+    @Transient
+    private String contactPhone;
+    @Transient
+    private String contactEmail;
+
 }

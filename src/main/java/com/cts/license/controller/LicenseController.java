@@ -4,7 +4,6 @@ import com.cts.license.exceptions.NoEntityFoundException;
 import com.cts.license.model.License;
 import com.cts.license.service.LicenseService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,15 +13,27 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RequiredArgsConstructor
-@RefreshScope
+
 @RestController
 @RequestMapping("v1/license")
 public class LicenseController {
 
     private final LicenseService licenseService;
 
+    @GetMapping("/{licenseId}/{organizationId}/{clientType}")
+    public ResponseEntity<License> getLicenseWithClient(@PathVariable Long licenseId,
+                                                        @PathVariable Long organizationId,
+                                                        @PathVariable String clientType) {
+        License license = licenseService.getLicense(licenseId, organizationId, clientType);
+        if (license == null) {
+            throw new NoEntityFoundException("No License found");
+        }
+
+        return ResponseEntity.ok(license);
+    }
+
     @GetMapping("/{licenseId}/{organizationId}")
-    public ResponseEntity<License> getLicense(@PathVariable Long licenseId, @PathVariable String organizationId) {
+    public ResponseEntity<License> getLicense(@PathVariable Long licenseId, @PathVariable Long organizationId) {
         License license = licenseService.getLicense(licenseId, organizationId);
         if (license == null) {
             throw new NoEntityFoundException("No License found");
@@ -37,7 +48,7 @@ public class LicenseController {
     }
 
     @PutMapping("/{licenseId}/{organizationId}")
-    public ResponseEntity<String> updateLicense(@PathVariable Long licenseId, @PathVariable String organizationId) {
+    public ResponseEntity<String> updateLicense(@PathVariable Long licenseId, @PathVariable Long organizationId) {
         return ResponseEntity.ok(licenseService.updateLicense(licenseId, organizationId));
     }
 
