@@ -5,14 +5,17 @@ import com.cts.license.model.License;
 import com.cts.license.repository.LicenseRepository;
 import com.cts.license.service.LicenseService;
 import com.cts.license.service.client.OrganizationDiscoveryClient;
+import com.cts.license.service.client.OrganizationRestTemplateClient;
 import com.cts.license.vo.Organization;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class LicenseServiceImpl implements LicenseService {
@@ -21,6 +24,7 @@ public class LicenseServiceImpl implements LicenseService {
     private final MessageSource messages;
     private final LicensingServiceProperties properties;
     private final OrganizationDiscoveryClient organizationDiscoveryClient;
+    private final OrganizationRestTemplateClient organizationRestTemplateClient;
 
 
     @Override
@@ -43,8 +47,12 @@ public class LicenseServiceImpl implements LicenseService {
         Organization organization = null;
         switch (clientType) {
             case "discovery":
-                System.out.println("I am using the discovery client");
+                log.info("I am using the discovery client");
                 organization = organizationDiscoveryClient.getOrganization(organizationId);
+                break;
+            case "rest":
+                log.info("I am using the rest client");
+                organization = organizationRestTemplateClient.getOrganization(organizationId);
                 break;
         }
         return organization;

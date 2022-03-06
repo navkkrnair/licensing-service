@@ -16,12 +16,12 @@ import java.util.List;
 public class OrganizationDiscoveryClient {
     private final DiscoveryClient discoveryClient;
 
-    public Organization getOrganization(Long organizationId){
+    public Organization getOrganization(Long organizationId) {
         RestTemplate restTemplate = new RestTemplate();
         List<ServiceInstance> instances = discoveryClient.getInstances("organization-service");
         String serviceUri = String.format("%s/v1/organization/%s", instances.get(0)
-                                                                        .getUri()
-                                                                        .toString(), organizationId);
+                                                                            .getUri()
+                                                                            .toString(), organizationId);
         ResponseEntity<Organization> response = restTemplate.exchange(serviceUri, HttpMethod.GET, null, Organization.class, organizationId);
         return response.getBody();
     }
