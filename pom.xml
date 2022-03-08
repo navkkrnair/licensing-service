@@ -69,7 +69,24 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/io.github.resilience4j/resilience4j-spring-boot2 -->
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-spring-boot2</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.github.resilience4j/resilience4j-circuitbreaker -->
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-circuitbreaker</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.github.resilience4j/resilience4j-timelimiter -->
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-timelimiter</artifactId>
+            <version>1.7.1</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
