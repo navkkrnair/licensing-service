@@ -5,6 +5,7 @@ import com.cts.license.model.License;
 import com.cts.license.repository.LicenseRepository;
 import com.cts.license.service.LicenseService;
 import com.cts.license.service.client.OrganizationDiscoveryClient;
+import com.cts.license.service.client.OrganizationFeignClient;
 import com.cts.license.service.client.OrganizationRestTemplateClient;
 import com.cts.license.vo.Organization;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class LicenseServiceImpl implements LicenseService {
     private final LicensingServiceProperties properties;
     private final OrganizationDiscoveryClient organizationDiscoveryClient;
     private final OrganizationRestTemplateClient organizationRestTemplateClient;
+    private final OrganizationFeignClient organizationFeignClient;
 
 
     @Override
@@ -53,6 +55,10 @@ public class LicenseServiceImpl implements LicenseService {
             case "rest":
                 log.info("I am using the rest client");
                 organization = organizationRestTemplateClient.getOrganization(organizationId);
+                break;
+            case "feign":
+                log.info("I am using feign client");
+                organization = organizationFeignClient.getOrganization(organizationId);
                 break;
         }
         return organization;
