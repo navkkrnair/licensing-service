@@ -6,3 +6,14 @@ spring:
       optional:configserver:http://localhost:8888
     activate:
       on-profile: dev
+resilience4j:
+  circuitbreaker:
+    instances:
+      licenseService:
+        registerHealthIndicator: true
+        ringBufferSizeInClosedState: 5
+        ringBufferSizeinHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        recordExceptions:
+          - java.util.concurrent.TimeoutException

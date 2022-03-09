@@ -8,6 +8,7 @@ import com.cts.license.service.client.OrganizationDiscoveryClient;
 import com.cts.license.service.client.OrganizationFeignClient;
 import com.cts.license.service.client.OrganizationRestTemplateClient;
 import com.cts.license.vo.Organization;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Random;
+import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -64,11 +67,30 @@ public class LicenseServiceImpl implements LicenseService {
         return organization;
     }
 
+    @CircuitBreaker(name = "licenseService")
     @Override
-    public License getLicense(Long licenseId, Long organizationId) {
+    public License getLicense(Long licenseId, Long organizationId) throws TimeoutException {
+        longRunningOperation();
         License license = repository.findByIdAndOrganizationId(licenseId, organizationId);
         license.setComment(properties.getProperty());
         return license;
+    }
+
+    private void longRunningOperation() throws TimeoutException {
+        Random random = new Random();
+        int randomNum = random.nextInt((3 - 1) + 1) + 1;
+        if (randomNum == 3) {
+            sleep();
+        }
+    }
+
+    private void sleep() throws TimeoutException {
+        try {
+            Thread.sleep(1000);
+            throw new TimeoutException();
+        } catch (InterruptedException e) {
+            log.error(e.getMessage());
+        }
     }
 
     @Override

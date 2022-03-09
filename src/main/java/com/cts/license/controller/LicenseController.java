@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Locale;
+import java.util.concurrent.TimeoutException;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -33,7 +34,7 @@ public class LicenseController {
     }
 
     @GetMapping("/{licenseId}/{organizationId}")
-    public ResponseEntity<License> getLicense(@PathVariable Long licenseId, @PathVariable Long organizationId) {
+    public ResponseEntity<License> getLicense(@PathVariable Long licenseId, @PathVariable Long organizationId) throws TimeoutException {
         License license = licenseService.getLicense(licenseId, organizationId);
         if (license == null) {
             throw new NoEntityFoundException("No License found");
