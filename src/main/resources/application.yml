@@ -6,3 +6,36 @@ spring:
       optional:configserver:http://localhost:8888
     activate:
       on-profile: dev
+resilience4j:
+  circuitbreaker:
+    instances:
+      licenseService:
+        registerHealthIndicator: true
+        ringBufferSizeInClosedState: 5
+        ringBufferSizeinHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        recordExceptions:
+          - java.util.concurrent.TimeoutException
+  bulkhead:
+    instances:
+      bulkheadLicenseService:
+        maxWaitDuration: 10ms
+        maxConcurrentCalls: 20
+  thread-pool-bulkhead:
+    instances:
+      bulkheadLicenseService:
+        maxThreadPoolSize: 1
+        coreThreadPoolSize: 1
+        queueCapacity: 1
+        keepAliveDuration: 20ms
+  retry:
+    instances:
+      retryLicenseService:
+        maxRetryAttempts: 5
+        waitDuration: 500
+        retry-exceptions:
+          - java.util.concurrent.TimeoutException
+logging:
+  level:
+    com.cts.license: debug

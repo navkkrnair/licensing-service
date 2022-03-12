@@ -3,7 +3,10 @@ package com.cts.license.controller;
 import com.cts.license.exceptions.NoEntityFoundException;
 import com.cts.license.model.License;
 import com.cts.license.service.LicenseService;
+import com.cts.license.utils.UserContext;
+import com.cts.license.utils.UserContextHolder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +17,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RequiredArgsConstructor
-
+@Slf4j
 @RestController
 @RequestMapping("v1/license")
 public class LicenseController {
@@ -35,6 +38,9 @@ public class LicenseController {
 
     @GetMapping("/{licenseId}/{organizationId}")
     public ResponseEntity<License> getLicense(@PathVariable Long licenseId, @PathVariable Long organizationId) throws TimeoutException {
+        String correlationId = UserContextHolder.getContext()
+                                                .getCorrelationId();
+        log.debug("Value from header for {}: {}", UserContext.CORRELATION_ID, correlationId);
         License license = licenseService.getLicense(licenseId, organizationId);
         if (license == null) {
             throw new NoEntityFoundException("No License found");

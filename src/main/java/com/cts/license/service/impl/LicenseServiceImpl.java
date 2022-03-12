@@ -8,7 +8,9 @@ import com.cts.license.service.client.OrganizationDiscoveryClient;
 import com.cts.license.service.client.OrganizationFeignClient;
 import com.cts.license.service.client.OrganizationRestTemplateClient;
 import com.cts.license.vo.Organization;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -67,12 +69,26 @@ public class LicenseServiceImpl implements LicenseService {
         return organization;
     }
 
-    @CircuitBreaker(name = "licenseService")
+    @CircuitBreaker(name = "licenseService", fallbackMethod = "fallBackLicense")
+    @Retry(name = "retryLicenseService", fallbackMethod = "fallBackLicense")
+    @Bulkhead(name = "bulkheadLicenseService", fallbackMethod = "fallBackLicense")
     @Override
     public License getLicense(Long licenseId, Long organizationId) throws TimeoutException {
         longRunningOperation();
         License license = repository.findByIdAndOrganizationId(licenseId, organizationId);
         license.setComment(properties.getProperty());
+        return license;
+    }
+
+    private License fallBackLicense(Long licenseId, Long organizationId, Throwable throwable) {
+        License license = License.builder()
+                                 .id(licenseId)
+                                 .description("fallback license")
+                                 .organizationId(organizationId)
+                                 .organizationName("na")
+                                 .licenseType("fake")
+                                 .comment("No info available")
+                                 .build();
         return license;
     }
 
