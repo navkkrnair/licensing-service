@@ -3,6 +3,8 @@ package com.cts.license;
 import com.cts.license.model.License;
 import com.cts.license.repository.LicenseRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.adapters.KeycloakConfigResolver;
+import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -38,4 +40,8 @@ public class LicensingServiceApplication {
         };
     }
 
+    @Bean
+    public KeycloakConfigResolver keycloakConfigResolver() {
+        return new KeycloakSpringBootConfigResolver();
+    }
 }
