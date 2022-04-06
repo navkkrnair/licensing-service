@@ -6,6 +6,18 @@ spring:
       optional:configserver:http://localhost:8888
     activate:
       on-profile: dev
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: orgChangeTopic
+          content-type: application/json
+          group: licensingGroup
+      kafka:
+        binder:
+          brokers:
+            - kafkaserver:9092
+
 resilience4j:
   circuitbreaker:
     instances:
@@ -45,6 +57,6 @@ keycloak:
   ssl-required: external
   resource: ostock
   credentials:
-    secret: oUVxiEvzxtET8X1WhP94AtRAFfHZNvbM
+    secret: zGfLk4M7BIpyFHx87RPlvASazL7TfPaU
   use-resource-role-mappings: true
   bearer-only: true
