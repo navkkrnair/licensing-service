@@ -18,6 +18,10 @@ spring:
           brokers:
             - kafkaserver:9092
 
+redis:
+  server: redisserver
+  port: 6379
+
 resilience4j:
   circuitbreaker:
     instances:
@@ -57,6 +61,6 @@ keycloak:
   ssl-required: external
   resource: ostock
   credentials:
-    secret: zGfLk4M7BIpyFHx87RPlvASazL7TfPaU
+    secret: 9Z4oQcg4mnxWt74mVmNVRPQEekpCG9D0
   use-resource-role-mappings: true
   bearer-only: true

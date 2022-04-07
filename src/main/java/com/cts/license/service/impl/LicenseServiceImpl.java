@@ -3,6 +3,7 @@ package com.cts.license.service.impl;
 import com.cts.license.config.LicensingServiceProperties;
 import com.cts.license.model.License;
 import com.cts.license.repository.LicenseRepository;
+import com.cts.license.repository.OrganizationRedisRepository;
 import com.cts.license.service.LicenseService;
 import com.cts.license.service.client.OrganizationDiscoveryClient;
 import com.cts.license.service.client.OrganizationFeignClient;
@@ -32,6 +33,7 @@ public class LicenseServiceImpl implements LicenseService {
     private final OrganizationDiscoveryClient organizationDiscoveryClient;
     private final OrganizationRestTemplateClient organizationRestTemplateClient;
     private final OrganizationFeignClient organizationFeignClient;
+    private final OrganizationRedisRepository organizationRedisRepository;
 
 
     @Override
@@ -51,22 +53,38 @@ public class LicenseServiceImpl implements LicenseService {
     }
 
     private Organization retrieveOrganizationInfo(Long organizationId, String clientType) {
-        Organization organization = null;
-        switch (clientType) {
-            case "discovery":
-                log.info("I am using the discovery client");
-                organization = organizationDiscoveryClient.getOrganization(organizationId);
-                break;
-            case "rest":
-                log.info("I am using the rest client");
-                organization = organizationRestTemplateClient.getOrganization(organizationId);
-                break;
-            case "feign":
-                log.info("I am using feign client");
-                organization = organizationFeignClient.getOrganization(organizationId);
-                break;
+        log.info("Checking Cache for Organization with id {}", organizationId);
+        Organization organization = checkRedisCache(organizationId);
+        if (organization == null) {
+            log.info("Redis Cache doesn't have Organization, Calling organization-service");
+            switch (clientType) {
+                case "discovery":
+                    log.info("Retrieving Organization using the discovery client");
+                    organization = organizationDiscoveryClient.getOrganization(organizationId);
+                    break;
+                case "rest":
+                    log.info("Retrieving Organization using the rest client");
+                    organization = organizationRestTemplateClient.getOrganization(organizationId);
+                    break;
+                case "feign":
+                    log.info("Retrieving Organization using feign client");
+                    organization = organizationFeignClient.getOrganization(organizationId);
+                    break;
+            }
+            log.info("Saving Organization with id {} to cache", organization.getId());
+            cacheOrganization(organization);
         }
+
         return organization;
+    }
+
+    private void cacheOrganization(Organization organization) {
+        organizationRedisRepository.save(organization);
+    }
+
+    private Organization checkRedisCache(Long organizationId) {
+        return organizationRedisRepository.findById(organizationId)
+                                          .orElse(null);
     }
 
     @CircuitBreaker(name = "licenseService", fallbackMethod = "fallBackLicense")
