@@ -15,6 +15,7 @@ import javax.persistence.*;
 @Entity
 public class License extends RepresentationModel<License> {
     @Id
+
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String description;

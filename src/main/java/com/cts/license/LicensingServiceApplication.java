@@ -3,6 +3,9 @@ package com.cts.license;
 import com.cts.license.event.OrganizationChangeModel;
 import com.cts.license.model.License;
 import com.cts.license.repository.LicenseRepository;
+import com.cts.license.repository.OrganizationRedisRepository;
+import com.cts.license.vo.Organization;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
@@ -17,14 +20,19 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.context.annotation.Bean;
 
+import java.util.Optional;
+
 
 @Slf4j
 @RefreshScope
+@RequiredArgsConstructor
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
 @EnableBinding(Sink.class)
 public class LicensingServiceApplication {
+
+    private final OrganizationRedisRepository organizationRedisRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(LicensingServiceApplication.class, args);
@@ -53,5 +61,11 @@ public class LicensingServiceApplication {
     @StreamListener(Sink.INPUT)
     public void loggerSink(OrganizationChangeModel model) {
         log.info("Received a {} event for Organization id {}", model.getAction(), model.getOrganizationId());
+        switch (model.getAction()){
+            case "UPDATED":
+            case "DELETED":
+                organizationRedisRepository.deleteById(model.getOrganizationId());
+                break;
+        }
     }
 }

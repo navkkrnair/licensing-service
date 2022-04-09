@@ -55,12 +55,3 @@ resilience4j:
 logging:
   level:
     com.cts.license: debug
-keycloak:
-  realm: ostock-realm
-  auth-server-url: http://keycloak:8090/auth
-  ssl-required: external
-  resource: ostock
-  credentials:
-    secret: 9Z4oQcg4mnxWt74mVmNVRPQEekpCG9D0
-  use-resource-role-mappings: true
-  bearer-only: true
